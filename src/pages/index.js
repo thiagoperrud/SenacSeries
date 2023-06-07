@@ -1,23 +1,32 @@
-import CardFilme from "@/components/CardJogo"
-import SecaoJogos from "@/components/SecaoJogos"
+import CardSerie from "@/components/CardSerie"
+import SecaoSeries from "@/components/SecaoSeries"
 import Titulo from "@/components/Titulo"
 import Header from "@/components/header"
+import { useState } from "react"
 
 
 export default function Home() {
+  const [series, setSeries] = useState([])
+  const [seriesAmazon, setAmazon] = useState([])
 
-  const jogos = [
-    {
-      titulo: "The Witcher 3",
-      nota: "9.0",
-      poster: "https://upload.wikimedia.org/wikipedia/pt/0/06/TW3_Wild_Hunt.png"
-    },
-    {
-      titulo: "Dark Souls 3",
-      nota: "9.5",
-      poster: "https://1.bp.blogspot.com/-9b6F82v_5h4/VYLFCSiOOyI/AAAAAAAAR9w/xSwijRG_uSg/s1600/dark-souls-iii-capa.png"
+  const url = 'https://api.themoviedb.org/3/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=amazon';
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNWRmZjU3YjRmOWNjMDFiYjNlYWVkMzJkYzU5Yzc1ZiIsInN1YiI6IjY0ODEwNzNlOTkyNTljMDBhY2NhZDFiMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.dMUF8czUM67HQ5BZB_pAqiqRhwsdiuPs5BtfZDuDoi8'
     }
-  ]
+  };
+
+  fetch('https://api.themoviedb.org/3/discover/tv?include_adult=false&include_null_first_air_dates=false&language=pt-BR&page=1&sort_by=popularity.desc', options)
+    .then(response => response.json())
+    .then(response => setSeries(response.results))
+    .catch(err => console.error(err));
+
+  fetch(url, options)
+    .then(res => res.json())
+    .then(res => setAmazon(res.results))
+    .catch(err => console.error(err));
 
   return (
     <>
@@ -27,16 +36,16 @@ export default function Home() {
 
 
       <div>
-        <img className="h-72 brightness-50 object-cover w-screen" src="https://www.wallpapertip.com/wmimgs/14-143488_kategorien-wallpapertags-abstract-data-src-most-popular-battlefield.jpg" />
+        <img className="h-72 brightness-50 object-cover w-screen" src="https://wallpapers.com/images/featured/9pvmdtvz4cb0xl37.jpg" />
       </div>
 
-      <main className="flex min-h-screen flex-col justify-between px-24">
+      <main className="flex min-h-screen flex-col px-24">
 
-        <Titulo>Jogos em Alta</Titulo>
-        <SecaoJogos jogos={jogos} />
+        <Titulo>Seriados em Alta</Titulo>
+        <SecaoSeries series={series} />
 
-        <Titulo>Gameplays em Alta</Titulo>
-        <Titulo>Lançamentos</Titulo>
+        <Titulo>Series da Amazon</Titulo>
+        <SecaoSeries series={seriesAmazon} />
 
 
       </main>
